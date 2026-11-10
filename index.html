@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#090d16">
+  <title>Smart Menu Pro | Next-Gen Gastro Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --bg-base: #090d16;
+      --bg-surface: #131b2e;
+      --bg-card: #182238;
+      --bg-glass: rgba(24, 34, 56, 0.75);
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-glow: rgba(245, 158, 11, 0.25);
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-glass: rgba(255, 255, 255, 0.85);
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --accent-glow: rgba(217, 119, 6, 0.2);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 110px;
+      overflow-x: hidden;
+      transition: background-color 0.3s var(--ease);
+    }
+
+    /* Ambient Glow Header */
+    .app-header {
+      position: relative;
+      padding: 24px 20px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .ambient-glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: var(--accent);
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-meta h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .table-indicator::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Controls Bar */
+    .sticky-panel {
+      position: sticky;
+      top: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 14px 20px;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .category-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .category-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-chip {
+      padding: 8px 16px;
+      border-radius: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .cat-chip.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* Grid layout */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .dish-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      gap: 14px;
+      position: relative;
+      transition: transform 0.2s var(--ease), border-color 0.2s;
+    }
+
+    .dish-card:active {
+      transform: scale(0.99);
+    }
+
+    .dish-img-wrap {
+      width: 105px;
+      height: 105px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .dish-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease);
+    }
+
+    .dish-card:hover .dish-img {
+      transform: scale(1.05);
+    }
+
+    .dish-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dish-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    .dish-title {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .dish-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .dish-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .dish-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.3px;
+    }
+
+    /* Counter Engine */
+    .qty-control {
+      display: flex;
+      align-items: center;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .qty-btn:active {
+      background: var(--border);
+    }
+
+    .qty-val {
+      width: 28px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .add-action-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 7px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px var(--accent-glow);
+      transition: transform 0.15s;
+    }
+
+    .add-action-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Floating Cart Dock */
+    .cart-dock {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(19, 27, 46, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.5);
+      z-index: 100;
+      cursor: pointer;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: all 0.35s var(--ease);
+    }
+
+    .cart-dock.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .dock-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dock-badge {
+      background: var(--accent);
+      color: #000;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dock-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .dock-action-text {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: var(--bg-surface);
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 28px 28px 0 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      animation: sheetUp 0.3s var(--ease);
+    }
+
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-head {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-head h3 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .modal-scroll {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .bill-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+
+    .summary-row.total {
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 800;
+      margin-top: 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .checkout-btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="ambient-glow"></div>
+    <div class="header-content">
+      <div class="brand-meta">
+        <h1>CHORVODOR</h1>
+        <div class="table-indicator" id="tableBadge">Stol #--</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="App.toggleTheme()" title="Temani o'zgartirish">🌓</button>
+        <button class="icon-btn" onclick="App.callService()" title="Ofitsiant chaqirish">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="sticky-panel">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="filterInput" class="search-input" placeholder="Taom yoki ingrediyent izlash...">
+    </div>
+    <div class="category-scroll" id="catGroup">
+      <button class="cat-chip active" data-filter="all">Barchasi</button>
+      <button class="cat-chip" data-filter="osh">Osh & Taomlar</button>
+      <button class="cat-chip" data-filter="kabob">Kaboblar</button>
+      <button class="cat-chip" data-filter="salat">Salatlar</button>
+      <button class="cat-chip" data-filter="ichimlik">Ichimliklar</button>
+    </div>
+  </section>
+
+  <main class="menu-grid" id="dishGrid"></main>
+
+  <!-- Docked Cart -->
+  <aside class="cart-dock" id="cartDock" onclick="App.toggleModal(true)">
+    <div class="dock-meta">
+      <div class="dock-badge" id="cartBadgeCount">0</div>
+      <div>
+        <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Buyurtma</div>
+        <div class="dock-price" id="cartDockPrice">0 so'm</div>
+      </div>
+    </div>
+    <div class="dock-action-text">Hisob-kitob ➔</div>
+  </aside>
+
+  <!-- Checkout Drawer -->
+  <div class="modal-backdrop" id="checkoutModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <h3>Savat Tafsilotlari</h3>
+        <button class="icon-btn" onclick="App.toggleModal(false)">✕</button>
+      </div>
+      <div class="modal-scroll" id="modalListContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Enterprise Level State-Driven Architecture
+     */
+    const App = (function() {
+      // Configuration & Defaults
+      const CONFIG = {
+        SERVICE_FEE_PERCENT: 10,
+        CURRENCY: "so'm",
+        STORAGE_KEY: "choyxona_cart_state",
+        // Ixtiyoriy: Agar bot orqali avtomatlashtirmoqchi bo'lsangiz:
+        TELEGRAM_BOT_TOKEN: "", 
+        TELEGRAM_CHAT_ID: ""
+      };
+
+      // Ma'lumotlar bazasi
+      const DB = [
+        { id: 101, cat: 'osh', name: "Choyxona Devzira Palov", desc: "Chust devzirasi, barra qo'y go'shti, qazi, bedana tuxum", price: 48000, img: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=350&auto=format&fit=crop&q=70", badge: "Maxsus" },
+        { id: 102, cat: 'osh', name: "Qozon Kabob (Lahm)", desc: "Mayin dumba yog'ida qovurilgan lahm go'sht va tillarang kartoshka", price: 58000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=350&auto=format&fit=crop&q=70", badge: "Top" },
+        { id: 103, cat: 'osh', name: "Chustcha Sho'rva", desc: "Barra go'sht, butun sabzavotlar va xushbo'y tog' giyohlari", price: 34000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=350&auto=format&fit=crop&q=70" },
+        { id: 201, cat: 'kabob', name: "Mayin Qiyma Shashlik", desc: "Mol va dumba go'shtining klassik uyg'unligi", price: 14000, img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=350&auto=format&fit=crop&q=70", badge: "Hit" },
+        { id: 202, cat: 'kabob', name: "Saralangan Jaz Kabob", desc: "Dumbasi bilan terilgan lahm mol go'shti", price: 18000, img: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=350&auto=format&fit=crop&q=70" },
+        { id: 203, cat: 'kabob', name: "Jigar Dumbacha", desc: "Barra jigar bo'laklari dumba pardasi bilan", price: 15000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=350&auto=format&fit=crop&q=70" },
+        { id: 301, cat: 'salat', name: "Achchiq-Chuchuk", desc: "Yupqa parrak qilingan Yapon pomidori, piyoz, achchiq qalampir", price: 12000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=350&auto=format&fit=crop&q=70" },
+        { id: 302, cat: 'salat', name: "Suzma Ko'katlar Bilan", desc: "Chakka, kashnich, sarimsoq va zaytun yog'i", price: 10000, img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=350&auto=format&fit=crop&q=70" },
+        { id: 401, cat: 'ichimlik', name: "Maxsus Ko'k Choy №95", desc: "Limon, novvot, tog' kiyiko'ti va yalpiz barglari", price: 8000, img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=350&auto=format&fit=crop&q=70" },
+        { id: 402, cat: 'ichimlik', name: "Muzdek Mevali Kompot", desc: "O'rik va gilosdan tayyorlangan uy kompoti (1L)", price: 18000, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=350&auto=format&fit=crop&q=70" }
+      ];
+
+      // Reaktiv State
+      let state = {
+        cart: {},
+        category: 'all',
+        searchQuery: '',
+        tableNumber: '1',
+        theme: 'dark'
+      };
+
+      // Native Haptic Engine
+      const triggerHaptic = () => {
+        if ('vibrate' in navigator) navigator.vibrate(15);
+      };
+
+      // URL parameters resolver (?table=4)
+      const parseEnvironment = () => {
+        const params = new URLSearchParams(window.location.search);
+        state.tableNumber = params.get('table') || '1';
+        document.getElementById('tableBadge').textContent = `Stol #${state.tableNumber}`;
+        
+        // Load persistency
+        try {
+          const cached = localStorage.getItem(CONFIG.STORAGE_KEY);
+          if (cached) state.cart = JSON.parse(cached);
+        } catch(e) {}
+      };
+
+      const syncStorage = () => {
+        try {
+          localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state.cart));
+        } catch(e) {}
+      };
+
+      const formatMoney = (val) => {
+        return new Intl.NumberFormat('uz-UZ').format(val) + " " + CONFIG.CURRENCY;
+      };
+
+      // UI Rendering
+      const render = () => {
+        const grid = document.getElementById('dishGrid');
+        grid.innerHTML = '';
+
+        const filtered = DB.filter(item => {
+          const catMatch = state.category === 'all' || item.cat === state.category;
+          const query = state.searchQuery.toLowerCase();
+          const searchMatch = item.name.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query);
+          return catMatch && searchMatch;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 60px 20px; color: var(--text-muted);">
+            <div style="font-size: 32px; margin-bottom: 8px;">🍽️</div>
+            Mos keluvchi taom topilmadi
+          </div>`;
+          return;
+        }
+
+        filtered.forEach(dish => {
+          const qty = state.cart[dish.id] || 0;
+          const card = document.createElement('div');
+          card.className = 'dish-card';
+          card.innerHTML = `
+            <div class="dish-img-wrap">
+              ${dish.badge ? `<div class="dish-badge">${dish.badge}</div>` : ''}
+              <img src="${dish.img}" class="dish-img" alt="${dish.name}" loading="lazy">
+            </div>
+            <div class="dish-info">
+              <div>
+                <h4 class="dish-title">${dish.name}</h4>
+                <p class="dish-desc">${dish.desc}</p>
+              </div>
+              <div class="dish-footer">
+                <span class="dish-price">${formatMoney(dish.price)}</span>
+                ${qty === 0 ? `
+                  <button class="add-action-btn" onclick="App.modifyCart(${dish.id}, 1)">+ Qo'shish</button>
+                ` : `
+                  <div class="qty-control">
+                    <button class="qty-btn" onclick="App.modifyCart(${dish.id}, -1)">−</button>
+                    <span class="qty-val">${qty}</span>
+                    <button class="qty-btn" onclick="App.modifyCart(${dish.id}, 1)">+</button>
+                  </div>
+                `}
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        updateDock();
+      };
+
+      const updateDock = () => {
+        const dock = document.getElementById('cartDock');
+        const badge = document.getElementById('cartBadgeCount');
+        const priceLabel = document.getElementById('cartDockPrice');
+
+        let totalQty = 0;
+        let subtotal = 0;
+
+        for (const [id, count] of Object.entries(state.cart)) {
+          const item = DB.find(x => x.id == id);
+          if (item) {
+            totalQty += count;
+            subtotal += item.price * count;
+          }
+        }
+
+        if (totalQty > 0) {
+          badge.textContent = totalQty;
+          priceLabel.textContent = formatMoney(subtotal);
+          dock.classList.add('visible');
+        } else {
+          dock.classList.remove('visible');
+          App.toggleModal(false);
+        }
+      };
+
+      const renderCheckoutDrawer = () => {
+        const container = document.getElementById('modalListContainer');
+        let subtotal = 0;
+        let html = '';
+
+        for (const [id, count] of Object.entries(state.cart)) {
+          const item = DB.find(x => x.id == id);
+          if (item) {
+            const linePrice = item.price * count;
+            subtotal += linePrice;
+            html += `
+              <div class="bill-item">
+                <div>
+                  <div style="font-weight: 700; font-size: 14px;">${item.name}</div>
+                  <div style="font-size: 12px; color: var(--text-muted);">${formatMoney(item.price)} × ${count}</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-weight: 700; font-size: 14px;">${formatMoney(linePrice)}</span>
+                  <div class="qty-control">
+                    <button class="qty-btn" onclick="App.modifyCart(${item.id}, -1)">−</button>
+                    <span class="qty-val">${count}</span>
+                    <button class="qty-btn" onclick="App.modifyCart(${item.id}, 1)">+</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        const fee = Math.round(subtotal * (CONFIG.SERVICE_FEE_PERCENT / 100));
+        const total = subtotal + fee;
+
+        html += `
+          <div class="summary-card">
+            <div class="summary-row"><span>Hisob:</span><span>${formatMoney(subtotal)}</span></div>
+            <div class="summary-row"><span>Xizmat haqi (${CONFIG.SERVICE_FEE_PERCENT}%):</span><span>${formatMoney(fee)}</span></div>
+            <div class="summary-row total"><span>Jami To'lov:</span><span>${formatMoney(total)}</span></div>
+          </div>
+          <button class="checkout-btn" onclick="App.dispatchOrder(${total})">
+            🚀 Ofitsiantga yuborish (Stol #${state.tableNumber})
+          </button>
+        `;
+
+        container.innerHTML = html;
+      };
+
+      return {
+        init: () => {
+          parseEnvironment();
+          render();
+
+          // Search Debounce listener
+          let timeout;
+          document.getElementById('filterInput').addEventListener('input', (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+              state.searchQuery = e.target.value;
+              render();
+            }, 150);
+          });
+
+          // Category filter listeners
+          document.querySelectorAll('.cat-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              state.category = btn.getAttribute('data-filter');
+              triggerHaptic();
+              render();
+            });
+          });
+
+          // Modal backdrop listener
+          document.getElementById('checkoutModal').addEventListener('click', (e) => {
+            if (e.target.id === 'checkoutModal') App.toggleModal(false);
+          });
+        },
+
+        modifyCart: (id, change) => {
+          triggerHaptic();
+          state.cart[id] = (state.cart[id] || 0) + change;
+          if (state.cart[id] <= 0) delete state.cart[id];
+          syncStorage();
+          render();
+          if (document.getElementById('checkoutModal').classList.contains('active')) {
+            renderCheckoutDrawer();
+          }
+        },
+
+        toggleModal: (open) => {
+          triggerHaptic();
+          const modal = document.getElementById('checkoutModal');
+          if (open) {
+            renderCheckoutDrawer();
+            modal.classList.add('active');
+          } else {
+            modal.classList.remove('active');
+          }
+        },
+
+        toggleTheme: () => {
+          triggerHaptic();
+          state.theme = state.theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', state.theme);
+        },
+
+        callService: () => {
+          triggerHaptic();
+          alert(`🔔 #${state.tableNumber}-stoldan chaqiruv qabul qilindi. Ofitsiant yo'lda!`);
+        },
+
+        dispatchOrder: (grandTotal) => {
+          triggerHaptic();
+          let orderText = `⚡️ YANGI BUYURTMA | STOL #${state.tableNumber}\n`;
+          orderText += `---------------------------\n`;
+          
+          for (const [id, count] of Object.entries(state.cart)) {
+            const item = DB.find(x => x.id == id);
+            orderText += `▪️ ${item.name} — ${count}x (${formatMoney(item.price * count)})\n`;
+          }
+          
+          orderText += `---------------------------\n`;
+          orderText += `💰 Jami: ${formatMoney(grandTotal)}\n`;
+          orderText += `⏰ Vaqt: ${new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'})}`;
+
+          // Telegram share protokoli
+          const url = `https://t.me/share/url?url=${encodeURIComponent(orderText)}`;
+          window.open(url, '_blank');
+        }
+      };
+    })();
+
+    window.addEventListener('DOMContentLoaded', App.init);
+  </script>
+</body>
+</html>
